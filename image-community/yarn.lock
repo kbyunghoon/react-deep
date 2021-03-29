@@ -10224,6 +10224,11 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
+rodash@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/rodash/-/rodash-1.0.2.tgz#f868dd229e8aa0dbb98df9b157fa6fd58d90f53f"
+  integrity sha512-PQ86mhgqH9jak9ZREgLdMYXRlD4knOb7og++zsgQnW4Hqx9z6TvA4aDt5wpqNkF5jdIgCmUlQWn41tzKM4uKWQ==
+
 rollup-plugin-babel@^4.3.3:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/rollup-plugin-babel/-/rollup-plugin-babel-4.4.0.tgz#d15bd259466a9d1accbdb2fe2fff17c52d030acb"

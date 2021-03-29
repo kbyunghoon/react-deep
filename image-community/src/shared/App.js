@@ -19,6 +19,8 @@ import { actionCreators as userActions } from "../redux/modules/user"
 import { apiKey } from "./firebase";
 import PostWrite from '../pages/PostWrite';
 import PostDetail from '../pages/PostDetail';
+import Search from './Search';
+import Notification from "../pages/Notification"
 
 function App() {
   const dispatch = useDispatch();
@@ -39,11 +41,14 @@ function App() {
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
           <Route path="/write" exact component={PostWrite} />
+          <Route path="/write/:id" exact component={PostWrite} />
           <Route path="/post/:id" exact component={PostDetail} />
+          <Route path="/search" exact component={Search} />
+          <Route path="/noti" exact component={Notification} />
         </ConnectedRouter>
       </Grid>
       <Permit>
-        <Button is_float text="+" _onClick={()=>{history.push('/write')}}>+</Button>
+        <Button is_float text="+" _onClick={() => { history.push('/write') }}>+</Button>
       </Permit>
     </React.Fragment>
   );

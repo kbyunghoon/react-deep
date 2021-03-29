@@ -20,6 +20,7 @@
     "redux-actions": "^2.6.5",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "rodash": "^1.0.2",
     "styled-components": "^5.2.1",
     "web-vitals": "^1.0.1"
   },

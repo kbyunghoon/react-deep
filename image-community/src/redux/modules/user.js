@@ -91,7 +91,7 @@ const loginCheckFB = () => {
 }
 
 const logoutFB = () => {
-    return function (dispatch,getstate,{history}){
+    return function (dispatch, getstate, { history }) {
         auth.signOut().then(() => {
             dispatch(logOut());
             history.replace('/');
