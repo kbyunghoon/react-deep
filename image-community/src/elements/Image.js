@@ -29,7 +29,7 @@ const Image = (props) => {
 
 Image.defaultProps = {
     shape: "circle",
-    src: "https://images.unsplash.com/photo-1615714734821-e0671ec65ef7?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=1080&ixlib=rb-1.2.1&q=80&w=1920",
+    src: "https://cdn.discordapp.com/attachments/578800402036949002/825716597414035517/e.jpg",
     size: 36,
 }
 
