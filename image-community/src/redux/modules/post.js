@@ -231,8 +231,28 @@ const getPostFB = (start = null, size = 3) => {
 };
 
 const getOnePostFB = (id) => {
-    return function(dispatch, getState, {history}){
-        
+    return function (dispatch, getState, { history }) {
+        const postDB = firestore.collection("post");
+        postDB.doc(id).get().then(doc => {
+            console.log(doc);
+            console.log(doc.data());
+
+            let _post = doc.data();
+            let post = Object.keys(_post).reduce(
+                (acc, cur) => {
+                    if (cur.indexOf("user_") !== -1) {
+                        return {
+                            ...acc,
+                            user_info: { ...acc.user_info, [cur]: _post[cur] },
+                        };
+                    }
+                    return { ...acc, [cur]: _post[cur] };
+                },
+                { id: doc.id, user_info: {} }
+            );
+
+            dispatch(setPost([post]))
+        })
     }
 }
 
@@ -241,7 +261,19 @@ export default handleActions(
         [SET_POST]: (state, action) =>
             produce(state, (draft) => {
                 draft.list.push(...action.payload.post_list);
-                draft.paging = action.payload.paging;
+                draft.list = draft.list.reduce((acc, cur) => {
+                    if (acc.findIndex(a => a.id === cur.id) === -1) {
+                        return [...acc, cur];
+                    } else {
+                        acc[acc.findIndex((a) => a.id === cur.id)] = cur;
+                        return acc;
+                    }
+                }, []);
+
+                if (action.payload.paging) {
+                    draft.paging = action.payload.paging;
+                }
+
                 draft.is_loading = false;
             }),
 
@@ -269,6 +301,7 @@ const actionCreators = {
     getPostFB,
     addPostFB,
     editPostFB,
+    getOnePostFB,
 };
 
 export { actionCreators };
