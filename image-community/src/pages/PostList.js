@@ -1,6 +1,5 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-
 import Post from "../components/Post";
 import { actionCreators as postActions } from "../redux/modules/post";
 import InfinityScroll from "../shared/InfinityScroll";
@@ -20,8 +19,9 @@ const PostList = (props) => {
     if (post_list.length < 2) {
       dispatch(postActions.getPostFB());
     }
-
   }, []);
+
+  console.log(paging);
 
   return (
     <React.Fragment>
@@ -29,6 +29,7 @@ const PostList = (props) => {
         {/* <Post/> */}
         <InfinityScroll
           callNext={() => {
+            console.log(paging);
             dispatch(postActions.getPostFB(paging.next));
           }}
           is_next={paging.next ? true : false}
@@ -38,6 +39,7 @@ const PostList = (props) => {
             if (p.user_info.user_id === user_info?.uid) {
               return (
                 <Grid
+                styles={{zIndex:'-1'}}
                   bg="#ffffff"
                   margin="8px 0px"
                   key={p.id}

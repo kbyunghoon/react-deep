@@ -9,15 +9,14 @@ import { actionCreators as imageActions } from "./image";
 const SET_POST = "SET_POST";
 const ADD_POST = "ADD_POST";
 const EDIT_POST = "EDIT_POST";
+const DEL_POST = "DEL_POST";
 const LOADING = "LOADING";
 
 const setPost = createAction(SET_POST, (post_list, paging) => ({ post_list, paging }));
 const addPost = createAction(ADD_POST, (post) => ({ post }));
-const editPost = createAction(EDIT_POST, (post_id, post) => ({
-    post_id,
-    post,
-}));
+const editPost = createAction(EDIT_POST, (post_id, post) => ({ post_id, post, }));
 const loading = createAction(LOADING, (is_loading) => ({ is_loading }));
+const delPost = createAction(DEL_POST, (post_id) => ({ post_id }));
 
 const initialState = {
     list: [],
@@ -33,6 +32,7 @@ const initialPost = {
     // },
     image_url: "https://mean0images.s3.ap-northeast-2.amazonaws.com/4.jpeg",
     contents: "",
+    like_cnt: 0,
     comment_cnt: 0,
     insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
 };
@@ -157,76 +157,68 @@ const getPostFB = (start = null, size = 3) => {
     return function (dispatch, getState, { history }) {
 
         let _paging = getState().post.paging;
-        if (_paging.satrt && !_paging.next) {
+        if (_paging.start && !_paging.next) {
             return;
         }
 
         dispatch(loading(true));
         const postDB = firestore.collection("post");
 
-        let query = postDB.orderBy("insert_dt", "desc")
+        let query = postDB.orderBy("insert_dt", "desc");
 
         if (start) {
             query = query.startAt(start);
         }
 
 
-        query.limit(size + 1).get().then(docs => {
-            let post_list = [];
+        query
+            .limit(size + 1)
+            .get()
+            .then((docs) => {
+                let post_list = [];
 
-            let paging = {
-                start: docs.docs[0],
-                next: docs.docs.length === size + 1 ? docs.docs[docs.docs.length - 1] : null,
-                size: size,
-            }
+                let paging = {
+                    start: docs.docs[0],
+                    next:
+                        docs.docs.length === size + 1
+                            ? docs.docs[docs.docs.length - 1]
+                            : null,
+                    size: size,
+                };
 
-            docs.forEach((doc) => {
-                let _post = doc.data();
-                // ['commenct_cnt', 'contents', ..]
-                let post = Object.keys(_post).reduce(
-                    (acc, cur) => {
-                        if (cur.indexOf("user_") !== -1) {
-                            return {
-                                ...acc,
-                                user_info: { ...acc.user_info, [cur]: _post[cur] },
-                            };
-                        }
-                        return { ...acc, [cur]: _post[cur] };
-                    },
-                    { id: doc.id, user_info: {} }
-                );
-                post_list.push(post);
+                // 이제 파이어스토어에서 가져온 데이터를 리덕스에 넣기 좋게 만들어요!
+                docs.forEach((doc) => {
+                    let _post = doc.data();
+                    let post = Object.keys(_post).reduce(
+                        (acc, cur) => {
+                            if (cur.indexOf("user_") !== -1) {
+                                return {
+                                    ...acc,
+                                    user_info: { ...acc.user_info, [cur]: _post[cur] },
+                                };
+                            }
+
+                            //   user_가 없다면? 누적 딕셔너리에 바로 넣어주기!
+                            return { ...acc, [cur]: _post[cur] };
+                        },
+                        { id: doc.id, user_info: {} }
+                    );
+
+                    //   정제한 데이터를 post_list에 넣어줘요.
+                    post_list.push(post);
+                });
+
+                // 마지막 1개는 빼줘요! (다음 번 리스트에 있어야할 값이니까요!)
+                if (paging.next) {
+                    post_list.pop();
+                }
+
+                // post_list를 확인해봅시다!
+                // console.log(post_list);
+
+                // 이제 게시글 목록을 리덕스에 넣어줍시다!
+                dispatch(setPost(post_list, paging));
             });
-
-            post_list.pop();
-
-            console.log(post_list);
-
-            dispatch(setPost(post_list, paging));
-        });
-        postDB.get().then((docs) => {
-            let post_list = [];
-            docs.forEach((doc) => {
-                let _post = doc.data();
-                // ['commenct_cnt', 'contents', ..]
-                let post = Object.keys(_post).reduce(
-                    (acc, cur) => {
-                        if (cur.indexOf("user_") !== -1) {
-                            return {
-                                ...acc,
-                                user_info: { ...acc.user_info, [cur]: _post[cur] },
-                            };
-                        }
-                        return { ...acc, [cur]: _post[cur] };
-                    },
-                    { id: doc.id, user_info: {} }
-                );
-                post_list.push(post);
-            });
-            console.log(post_list);
-
-            dispatch(setPost(post_list));
-        });
     };
 };
 
@@ -236,7 +228,6 @@ const getOnePostFB = (id) => {
         postDB.doc(id).get().then(doc => {
             console.log(doc);
             console.log(doc.data());
-
             let _post = doc.data();
             let post = Object.keys(_post).reduce(
                 (acc, cur) => {
@@ -250,8 +241,19 @@ const getOnePostFB = (id) => {
                 },
                 { id: doc.id, user_info: {} }
             );
-
             dispatch(setPost([post]))
+        })
+    }
+}
+
+const delPostFB = (post_id) => {
+    return function (dispatch, getState, { history }) {
+        const postDB = firestore.collection("post");
+        postDB.doc(post_id).delete().then(docRef => {
+            dispatch(delPost(post_id))
+            history.replace('/')
+        }).catch(err => {
+            console.log(err);
         })
     }
 }
@@ -289,6 +291,12 @@ export default handleActions(
             }),
         [LOADING]: (state, action) => produce(state, (draft) => {
             draft.is_loading = action.payload.is_loading;
+        }),
+        [DEL_POST]: (state, action) => produce(state, (draft) => {
+            let idx = draft.list.findIndex((p) => p.id === action.payload.post_id);
+            if (idx !== -1) {
+                draft.list.splice(idx, 1);
+            }
         })
     },
     initialState
@@ -302,6 +310,7 @@ const actionCreators = {
     addPostFB,
     editPostFB,
     getOnePostFB,
+    delPostFB,
 };
 
 export { actionCreators };

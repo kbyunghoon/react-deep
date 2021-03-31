@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import _ from "lodash";
-import {Spinner} from "../elements";
+import { Spinner } from "../elements";
 
 const InfinityScroll = (props) => {
 
@@ -46,7 +46,7 @@ const InfinityScroll = (props) => {
     return (
         <React.Fragment>
             {props.children}
-            {is_next && (<Spinner/>)}
+            {is_next && (<Spinner />)}
         </React.Fragment>
     )
 }
