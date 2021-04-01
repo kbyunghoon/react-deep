@@ -16,7 +16,7 @@ const Modal = (props) => {
 
 
     const del = () => {
-        dispatch(postActions.delPostFB(parent.id));
+        
     }
 
 
