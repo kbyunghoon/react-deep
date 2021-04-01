@@ -4,6 +4,9 @@ import Upload from "../shared/Upload";
 import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as postActions } from "../redux/modules/post"
 import { actionCreators as imageActions } from "../redux/modules/image"
+import { withStyles } from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
+import Radio from '@material-ui/core/Radio';
 
 const PostWrite = (props) => {
     const dispatch = useDispatch();
@@ -38,12 +41,21 @@ const PostWrite = (props) => {
     }
 
     const addPost = () => {
-        dispatch(postActions.addPostFB(contents));
+        dispatch(postActions.addPostFB(contents, selectedValue));
     }
 
     const editPost = () => {
-        dispatch(postActions.editPostFB(post_id, {contents: contents}))
+        dispatch(postActions.editPostFB(post_id, { contents: contents }))
     }
+
+
+
+
+    const [selectedValue, setSelectedValue] = React.useState('a');
+
+    const handleChange = (event) => {
+        setSelectedValue(event.target.value);
+    };
 
 
     if (!is_login) {
@@ -61,19 +73,126 @@ const PostWrite = (props) => {
             <Grid padding="16px">
                 <Text margin="0px" size="36px" bold>{is_edit ? "게시글 수정" : "게시글 작성"}</Text>
                 <Upload />
-            </Grid>
-            <Grid>
-                <Grid padding="16px">
-                    <Text margin="0px" size="24px" bold>미리보기</Text>
+                <button onClick={test}/>
+                <Grid textAlign="center">
+                    <Grid display="inline-block" width="50%" margin="0px auto">
+                        <Radio
+                            checked={selectedValue === 'a'}
+                            onChange={handleChange}
+                            value="a"
+                            name="radio-button-demo"
+                            inputProps={{ 'aria-label': 'A' }}
+                        />
+                        <Radio
+                            checked={selectedValue === 'b'}
+                            onChange={handleChange}
+                            value="b"
+                            name="radio-button-demo"
+                            inputProps={{ 'aria-label': 'B' }}
+                        />
+                        <Radio
+                            checked={selectedValue === 'c'}
+                            onChange={handleChange}
+                            value="c"
+                            name="radio-button-demo"
+                            inputProps={{ 'aria-label': 'C' }}
+                        />
+                    </Grid>
                 </Grid>
-                <Image shape="rectangle" src={preview ? preview : "http://via.placeholder.com/400x300"} />
             </Grid>
-            <Grid padding="16px">
-                <Input value={contents} _onChange={changeContents} label="게시글 내용" placeholder="게시글 작성" multiLine />
-            </Grid>
-            <Grid padding="16px">
-                {is_edit ? (<Button text="게시글수정" _onClick={editPost}></Button>) : (<Button text="게시글작성" _onClick={addPost}></Button>)}
-            </Grid>
+
+            {/* <Grid boxShadow='5px 5px 15px rgb(0 0 0 / 90%)' border="1px solid" bdrd="20px" margin="0px 0px 10px 0px">
+                <Grid>
+                    <Grid padding="16px">
+                        <Text margin="0px" size="24px" bold>미리보기</Text>
+                    </Grid>
+                </Grid>
+                <Grid is_flex>
+                    <Image shape="rectangle" src={preview ? preview : "http://via.placeholder.com/400x300"} />
+
+                    <Grid padding="16px">
+                        <Input value={contents} _onChange={changeContents} label="게시글 내용" placeholder="게시글 작성" multiLine />
+                    </Grid>
+                </Grid>
+                <Grid padding="16px">
+                    {is_edit ? (<Button text="게시글수정" _onClick={editPost}></Button>) : (<Button text="게시글작성" _onClick={addPost}></Button>)}
+                </Grid>
+            </Grid> */}
+
+
+            {(selectedValue === "a") ?
+                <Grid boxShadow='5px 5px 15px rgb(0 0 0 / 90%)' border="1px solid" bdrd="20px" margin="0px 0px 10px 0px" padding="5px">
+                    <Grid>
+                        <Grid padding="16px">
+                            <Text margin="0px" size="24px" bold>미리보기a</Text>
+                        </Grid>
+                    </Grid>
+                    <Grid>
+                        <Image shape="rectangle" src={preview ? preview : "http://via.placeholder.com/400x300"} />
+                        <Grid padding="16px">
+                            <Input value={contents} _onChange={changeContents} label="게시글 내용" placeholder="게시글 작성" multiLine />
+                        </Grid>
+                    </Grid>
+                    <Grid padding="16px">
+                        {is_edit ? (<Button text="게시글수정" _onClick={editPost}></Button>) : (<Button text="게시글작성" _onClick={addPost}></Button>)}
+                    </Grid>
+                </Grid>
+                :
+                (selectedValue === "b") ?
+                    <Grid boxShadow='5px 5px 15px rgb(0 0 0 / 90%)' border="1px solid" bdrd="20px" margin="0px 0px 10px 0px" padding="5px">
+                        <Grid>
+                            <Grid padding="16px">
+                                <Text margin="0px" size="24px" bold>미리보기b</Text>
+                            </Grid>
+                        </Grid>
+                        <Grid is_flex>
+                            <Image shape="rectangle" src={preview ? preview : "http://via.placeholder.com/400x300"} />
+                            <Grid padding="16px">
+                                <Input value={contents} _onChange={changeContents} label="게시글 내용" placeholder="게시글 작성" multiLine />
+                            </Grid>
+                        </Grid>
+                        <Grid padding="16px">
+                            {is_edit ? (<Button text="게시글수정" _onClick={editPost}></Button>) : (<Button text="게시글작성" _onClick={addPost}></Button>)}
+                        </Grid>
+                    </Grid>
+                    :
+                    <Grid boxShadow='5px 5px 15px rgb(0 0 0 / 90%)' border="1px solid" bdrd="20px" margin="0px 0px 10px 0px" padding="5px">
+                        <Grid>
+                            <Grid padding="16px">
+                                <Text margin="0px" size="24px" bold>미리보기c</Text>
+                            </Grid>
+                        </Grid>
+                        <Grid is_flex flex_direction="row-reverse">
+                            <Image shape="rectangle" src={preview ? preview : "http://via.placeholder.com/400x300"} />
+                            <Grid padding="5px">
+                                <Input value={contents} _onChange={changeContents} label="게시글 내용" placeholder="게시글 작성" multiLine />
+                            </Grid>
+                        </Grid>
+                        <Grid padding="16px">
+                            {is_edit ? (<Button text="게시글수정" _onClick={editPost}></Button>) : (<Button text="게시글작성" _onClick={addPost}></Button>)}
+                        </Grid>
+                    </Grid>
+            }
+
+
+
+
+            {/* <Grid boxShadow='5px 5px 15px rgb(0 0 0 / 90%)' border="1px solid" bdrd="20px" margin="0px 0px 10px 0px">
+                <Grid>
+                    <Grid padding="16px">
+                        <Text margin="0px" size="24px" bold>미리보기</Text>
+                    </Grid>
+                    <Image shape="rectangle" src={preview ? preview : "http://via.placeholder.com/400x300"} />
+                </Grid>
+                <Grid padding="16px">
+                    <Input value={contents} _onChange={changeContents} label="게시글 내용" placeholder="게시글 작성" multiLine />
+                </Grid>
+                <Grid padding="16px">
+                    {is_edit ? (<Button text="게시글수정" _onClick={editPost}></Button>) : (<Button text="게시글작성" _onClick={addPost}></Button>)}
+                </Grid>
+            </Grid> */}
+
+
         </React.Fragment>
     )
 }
