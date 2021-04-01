@@ -20,7 +20,6 @@ const PostWrite = (props) => {
     const { history } = props;
 
     let _post = is_edit ? post_list.find((p) => p.id === post_id) : null;
-    console.log(_post);
 
     const [contents, setContents] = useState(_post ? _post.contents : "");
 
@@ -45,7 +44,7 @@ const PostWrite = (props) => {
     }
 
     const editPost = () => {
-        dispatch(postActions.editPostFB(post_id, { contents: contents }))
+        dispatch(postActions.editPostFB(post_id, { contents: contents, layout: selectedValue }))
     }
 
 
@@ -56,6 +55,10 @@ const PostWrite = (props) => {
     const handleChange = (event) => {
         setSelectedValue(event.target.value);
     };
+
+    const test = () => {
+        console.log(contents)
+    }
 
 
     if (!is_login) {
@@ -73,7 +76,7 @@ const PostWrite = (props) => {
             <Grid padding="16px">
                 <Text margin="0px" size="36px" bold>{is_edit ? "게시글 수정" : "게시글 작성"}</Text>
                 <Upload />
-                <button onClick={test}/>
+                <button onClick={test} />
                 <Grid textAlign="center">
                     <Grid display="inline-block" width="50%" margin="0px auto">
                         <Radio

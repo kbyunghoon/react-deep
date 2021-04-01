@@ -6,7 +6,7 @@ import Favorite from "@material-ui/icons/Favorite"
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder"
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators as commentActions } from "../redux/modules/comment"
-import post from "../redux/modules/post";
+import { actionCreators as postActions } from "../redux/modules/post"
 
 
 const Post = (props) => {
@@ -26,12 +26,10 @@ const Post = (props) => {
   // })
 
   useEffect(() => {
+    console.log(props)
     if (!user_info) {
       return;
     }
-    console.log(like_list)
-    console.log(props.id)
-
 
     if (Object.keys(like_list).length === 0) {
       dispatch(commentActions.getLikeFB(props.id, user_info.uid))
@@ -48,10 +46,8 @@ const Post = (props) => {
 
 
   const addlike = () => {
-    // dispatch(commentActions.delLikeFB(props.id))
     dispatch(commentActions.addLikeFB(props.id))
     setLikecheck(true)
-    // dispatch(commentActions.getLikeFB(props.id, user_info.uid))
   }
 
   const delLike = () => {
@@ -59,20 +55,7 @@ const Post = (props) => {
     setLikecheck(false)
   }
 
-  // const checking = () => {
-  //   console.log(props.id)
-  //   console.log(like_list[props.id])
 
-
-
-  const openModal = () => {
-    console.log(props)
-    setModalOpen(true);
-  }
-
-  const closeModal = () => {
-    setModalOpen(false);
-  }
 
 
   return (
@@ -105,7 +88,14 @@ const Post = (props) => {
                 padding="4px"
                 margin="4px"
                 _onClick={(e) => {
-                  openModal()
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (window.confirm("삭제하시겠습니까?")) {
+                    dispatch(postActions.delPostFB(props.id))
+                    window.alert("게시글을 삭제하였습니다.")
+                  } else {
+                    return;
+                  };
                 }}
               >
                 삭제
@@ -113,12 +103,37 @@ const Post = (props) => {
             )}
           </Grid>
         </Grid>
-        <Grid padding="16px">
-          <Text>{props.contents}</Text>
-        </Grid>
-        <Grid>
-          <Image shape="rectangle" src={props.image_url} />
-        </Grid>
+
+        {props.layout === "a" ?
+          <Grid>
+            <Grid padding="16px">
+              <Text>{props.contents}</Text>
+            </Grid>
+            <Grid>
+              <Image shape="rectangle" src={props.image_url} />
+            </Grid>
+          </Grid>
+          :
+          props.layout === "b" ?
+            <Grid display="flex" flex_direction="row-reverse">
+              <Grid padding="16px">
+                <Text>{props.contents}</Text>
+              </Grid>
+              <Grid>
+                <Image shape="rectangle" src={props.image_url} />
+              </Grid>
+            </Grid> :
+            <Grid display="flex">
+              <Grid padding="16px">
+                <Text>{props.contents}</Text>
+              </Grid>
+              <Grid>
+                <Image shape="rectangle" src={props.image_url} />
+              </Grid>
+            </Grid>}
+
+
+
         <Grid padding="16px" is_flex>
           <Text margin="0px" bold>좋아요 {props.like_cnt}개</Text>
           {/* <Favorite onClick={addlike} />
@@ -137,7 +152,6 @@ const Post = (props) => {
           />}
         </Grid>
       </Grid>
-      <Modal open={modalOpen} close={closeModal} parent={props} />
     </React.Fragment >
   );
 }

@@ -35,6 +35,7 @@ const initialPost = {
     like_cnt: 0,
     comment_cnt: 0,
     insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
+    layout: "a",
 };
 
 const editPostFB = (post_id = null, post = {}) => {
@@ -95,7 +96,7 @@ const editPostFB = (post_id = null, post = {}) => {
     };
 };
 
-const addPostFB = (contents = "") => {
+const addPostFB = (contents = "", selectedValue) => {
     return function (dispatch, getState, { history }) {
         const postDB = firestore.collection("post");
 
@@ -110,13 +111,14 @@ const addPostFB = (contents = "") => {
         const _post = {
             ...initialPost,
             contents: contents,
+            layout: selectedValue,
             insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
         };
 
         const _image = getState().image.preview;
 
-        console.log(_image);
-        console.log(typeof _image);
+        // console.log(_image);
+        // console.log(typeof _image);
 
         const _upload = storage
             .ref(`images/${user_info.user_id}_${new Date().getTime()}`)
@@ -189,6 +191,7 @@ const getPostFB = (start = null, size = 3) => {
                 // 이제 파이어스토어에서 가져온 데이터를 리덕스에 넣기 좋게 만들어요!
                 docs.forEach((doc) => {
                     let _post = doc.data();
+                    console.log(_post)
                     let post = Object.keys(_post).reduce(
                         (acc, cur) => {
                             if (cur.indexOf("user_") !== -1) {
@@ -226,8 +229,8 @@ const getOnePostFB = (id) => {
     return function (dispatch, getState, { history }) {
         const postDB = firestore.collection("post");
         postDB.doc(id).get().then(doc => {
-            console.log(doc);
-            console.log(doc.data());
+            // console.log(doc);
+            // console.log(doc.data());
             let _post = doc.data();
             let post = Object.keys(_post).reduce(
                 (acc, cur) => {

@@ -27,14 +27,14 @@ const Upload = (props) => {
     }
   };
 
-  const uploadFB = () => {
-    if (!fileInput.current || fileInput.current.files.length === 0) {
-      window.alert("파일을 선택해주세요!");
-      return;
-    }
+  // const uploadFB = () => {
+  //   if (!fileInput.current || fileInput.current.files.length === 0) {
+  //     window.alert("파일을 선택해주세요!");
+  //     return;
+  //   }
 
-    dispatch(imageActions.uploadImageFB(fileInput.current.files[0]));
-  };
+  //   dispatch(imageActions.uploadImageFB(fileInput.current.files[0]));
+  // };
 
   return (
     <React.Fragment>
