@@ -22,6 +22,9 @@ import PostDetail from '../pages/PostDetail';
 import Search from './Search';
 import Notification from "../pages/Notification"
 
+import Fab from '@material-ui/core/Fab';
+import AddIcon from "@material-ui/icons/Add";
+
 function App() {
   const dispatch = useDispatch();
   const _session_key = `firebase:authUser:${apiKey}:[DEFAULT]`;

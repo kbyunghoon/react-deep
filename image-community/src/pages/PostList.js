@@ -29,7 +29,6 @@ const PostList = (props) => {
         {/* <Post/> */}
         <InfinityScroll
           callNext={() => {
-            console.log(paging);
             dispatch(postActions.getPostFB(paging.next));
           }}
           is_next={paging.next ? true : false}
@@ -39,9 +38,9 @@ const PostList = (props) => {
             if (p.user_info.user_id === user_info?.uid) {
               return (
                 <Grid
-                styles={{zIndex:'-1'}}
                   bg="#ffffff"
-                  margin="8px 0px"
+                  // margin="0px auto"
+                  // width="80%"
                   key={p.id}
                   _onClick={() => {
                     history.push(`/post/${p.id}`);
@@ -53,6 +52,8 @@ const PostList = (props) => {
             } else {
               return (
                 <Grid
+                  // margin="0px auto"
+                  // width="80%"
                   key={p.id}
                   bg="#ffffff"
                   _onClick={() => {

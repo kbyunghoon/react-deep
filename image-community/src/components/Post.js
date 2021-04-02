@@ -45,7 +45,7 @@ const Post = (props) => {
 
 
 
-  const addlike = () => {
+  const addlike = () => { 
     dispatch(commentActions.addLikeFB(props.id))
     setLikecheck(true)
   }
@@ -115,14 +115,14 @@ const Post = (props) => {
           </Grid>
           :
           props.layout === "b" ?
-            <Grid display="flex" flex_direction="row-reverse">
-              <Grid padding="16px">
-                <Text>{props.contents}</Text>
-              </Grid>
-              <Grid>
+            <React.Fragment>
+              <Grid is_flex>
+                <Grid width="50%" padding="16px">
+                  <Text>{props.contents}</Text>
+                </Grid>
                 <Image shape="rectangle" src={props.image_url} />
               </Grid>
-            </Grid> :
+            </React.Fragment> :
             <Grid display="flex">
               <Grid padding="16px">
                 <Text>{props.contents}</Text>
@@ -147,6 +147,10 @@ const Post = (props) => {
             }} /> : <FavoriteBorder onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              if (!user_info){
+                alert("로그인을 해주세요!")
+                return
+              }
               addlike()
             }}
           />}

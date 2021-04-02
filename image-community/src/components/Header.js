@@ -25,8 +25,8 @@ const Header = () => {
                             history.push('/')
                         }}
                         />
-                        <Grid is_flex>
-                            <Button text="내정보"></Button>
+                        <Grid is_flex width="40%">
+                            {/* <Button text="내정보"></Button> */}
                             <Button _onClick={() => {
                                 history.push("/noti");
                             }} text="알림"></Button>
